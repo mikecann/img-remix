@@ -2,7 +2,7 @@
 // AI image generation CLI - right-click any image, pick your settings, describe what you want.
 //
 // Non-interactive:
-//   generate-from-image <image> --prompt "..." [--variations 1] [--aspect auto] [--size auto]
+//   img-remix <image> --prompt "..." [--variations 1] [--aspect auto] [--size auto]
 
 import { select, input } from '@inquirer/prompts';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
@@ -109,10 +109,10 @@ function openImageFolder(dir: string): void {
 }
 
 // ---------------------------------------------------------------------------
-// Load .env from repo root (two levels up: generate-from-image -> tools -> repo)
+// Load .env beside this entry point, even when launched from another directory.
 // ---------------------------------------------------------------------------
 
-configDotenv({ path: join(dirname(dirname(import.meta.dirname)), '.env') });
+configDotenv({ path: join(import.meta.dirname, '.env') });
 
 const apiKey = process.env.OPENROUTER_API_KEY;
 if (!apiKey) {
@@ -151,7 +151,7 @@ const mimeType = mimeMap[imageExt] ?? 'image/jpeg';
 // ---------------------------------------------------------------------------
 
 console.log('');
-console.log('\x1b[36m  GENERATE FROM IMAGE\x1b[0m');
+console.log('\x1b[36m  IMG REMIX\x1b[0m');
 console.log(SEP);
 console.log(`  Input : ${imageName}${imageExt}`);
 console.log(`\x1b[90m  Dir   : ${imageDir}\x1b[0m`);
@@ -258,8 +258,8 @@ async function generateOne(prompt: string, dataUrl: string, model: string): Prom
     headers: {
       Authorization:  `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://github.com/mikecann/mikerosoft',
-      'X-Title':      'mikerosoft/generate-from-image',
+      'HTTP-Referer': 'https://github.com/mikecann/img-remix',
+      'X-Title':      'img-remix',
     },
     body: JSON.stringify(body),
   });

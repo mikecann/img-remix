@@ -1,5 +1,5 @@
 {
-  "name": "generate-from-image",
+  "name": "img-remix",
   "private": true,
   "type": "module",
   "dependencies": {

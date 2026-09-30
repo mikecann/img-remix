@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "generate-from-image",
+      "name": "img-remix",
       "dependencies": {
         "@inquirer/prompts": "latest",
         "dotenv": "^17.3.1",

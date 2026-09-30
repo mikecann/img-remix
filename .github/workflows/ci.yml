@@ -1,0 +1,29 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun test
+      - run: bunx tsc --noEmit
+      - name: Parse PowerShell scripts
+        shell: pwsh
+        run: ./tests/parse-powershell.ps1
+      - name: Check shell scripts
+        if: runner.os == 'macOS'
+        run: bash -n img-remix install.sh uninstall.sh tests/mac-install.test.sh
+      - name: Check Windows installation and removal
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tests/windows-install.test.ps1
+      - name: Check macOS installation and removal
+        if: runner.os == 'macOS'
+        run: bash tests/mac-install.test.sh
