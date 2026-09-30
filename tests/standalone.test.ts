@@ -32,3 +32,20 @@ test('one-shot CLI loads its own .env from another working directory and uses th
   expect(result.stderr.toString()).not.toContain('ERROR');
   expect(readFileSync(join(dir, 'input image-generated-001.png'), 'utf8')).toBe('offline-result');
 });
+
+test('one-shot CLI exits non-zero when every variation fails', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'img-remix test '));
+  dirs.push(dir);
+  copyFileSync(join(import.meta.dirname, '../index.ts'), join(dir, 'index.ts'));
+  symlinkSync(join(import.meta.dirname, '../node_modules'), join(dir, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir');
+  writeFileSync(join(dir, '.env'), 'OPENROUTER_API_KEY=offline-test-key\n');
+  writeFileSync(join(dir, 'input image.png'), 'reference');
+  writeFileSync(join(dir, 'mock.ts'), `
+    globalThis.fetch = async () => Response.json({ error: { message: 'Missing Authentication header', code: 401 } }, { status: 401 });
+  `);
+  const env = { ...process.env };
+  delete env.OPENROUTER_API_KEY;
+  const result = Bun.spawnSync([process.execPath, '--preload', join(dir, 'mock.ts'), join(dir, 'index.ts'), join(dir, 'input image.png'), '--prompt', 'Make it blue'], { cwd: tmpdir(), env });
+  expect(result.exitCode).not.toBe(0);
+  expect(result.stderr.toString()).toContain('ERROR');
+});

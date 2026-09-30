@@ -304,18 +304,20 @@ async function generateOneWithFallback(prompt: string, dataUrl: string): Promise
   throw new Error('All models rate-limited. Try again later.');
 }
 
-async function generate(prompt: string): Promise<void> {
+async function generate(prompt: string): Promise<boolean> {
   const varLabel = cfg.variations > 1 ? ` (${cfg.variations} variations)` : '';
   console.log(`\x1b[90m  Generating${varLabel}...\x1b[0m`);
   console.log('');
 
   const dataUrl = `data:${mimeType};base64,${readFileSync(imagePath).toString('base64')}`;
 
+  let failures = 0;
   for (let i = 1; i <= cfg.variations; i++) {
     if (cfg.variations > 1) console.log(`\x1b[90m  Variation ${i} of ${cfg.variations}...\x1b[0m`);
     try {
       await generateOneWithFallback(prompt, dataUrl);
     } catch (err) {
+      failures++;
       console.error(`  \x1b[31mERROR (variation ${i}): ${err}\x1b[0m`);
     }
   }
@@ -323,6 +325,7 @@ async function generate(prompt: string): Promise<void> {
   console.log('');
   console.log(SEP);
   console.log('');
+  return failures < cfg.variations;
 }
 
 if (batchPrompt !== null) {
@@ -331,8 +334,8 @@ if (batchPrompt !== null) {
   console.log('\x1b[90m  Non-interactive mode (--prompt)\x1b[0m');
   console.log(SEP);
   console.log('');
-  await generate(batchPrompt.trim());
-  process.exit(0);
+  const ok = await generate(batchPrompt.trim());
+  process.exit(ok ? 0 : 1);
 }
 
 console.log('');
