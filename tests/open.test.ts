@@ -13,6 +13,12 @@ test('Windows opens through explorer.exe with the whole path quoted, never cmd.e
   expect(openCommand(path, 'win32')).toEqual(['explorer.exe', `"${path}"`]);
 });
 
+// `folder` opens D:\ for an image at the top of a drive.
+test('Windows passes a drive root to explorer.exe without quotes', () => {
+  expect(openCommand('D:\\', 'win32')).toEqual(['explorer.exe', 'D:\\']);
+  expect(openCommand('D:\\photos', 'win32')).toEqual(['explorer.exe', '"D:\\photos"']);
+});
+
 test('macOS hands the path to open as a single argument', () => {
   expect(openCommand('/tmp/a&b, c.png', 'darwin')).toEqual(['open', '/tmp/a&b, c.png']);
 });
