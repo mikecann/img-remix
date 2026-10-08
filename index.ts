@@ -7,8 +7,8 @@
 import { select, input } from '@inquirer/prompts';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, extname, basename, dirname, resolve } from 'path';
-import { execFileSync } from 'child_process';
 import { configDotenv } from 'dotenv';
+import { openPath } from './open';
 
 const MODELS  = [
   'google/gemini-3.1-flash-image-preview',
@@ -90,22 +90,6 @@ function parseCli(argv: string[]): {
 
   const imagePath = positionals[0] ?? '';
   return { imagePath, prompt, variations, aspect, imageSize };
-}
-
-function openGeneratedImage(path: string): void {
-  if (process.platform === 'win32') {
-    execFileSync('cmd', ['/c', 'start', '', path], { stdio: 'inherit' });
-    return;
-  }
-  execFileSync('open', [path], { stdio: 'inherit' });
-}
-
-function openImageFolder(dir: string): void {
-  if (process.platform === 'win32') {
-    execFileSync('explorer', [dir], { stdio: 'inherit' });
-    return;
-  }
-  execFileSync('open', [dir], { stdio: 'inherit' });
 }
 
 // ---------------------------------------------------------------------------
@@ -366,13 +350,13 @@ while (true) {
   }
 
   if (cmd.toLowerCase() === 'open') {
-    if (lastOutPath && existsSync(lastOutPath)) openGeneratedImage(lastOutPath);
+    if (lastOutPath && existsSync(lastOutPath)) openPath(lastOutPath);
     else console.log('  No image generated yet.\n');
     continue;
   }
 
   if (cmd.toLowerCase() === 'folder') {
-    openImageFolder(imageDir);
+    openPath(imageDir);
     continue;
   }
 

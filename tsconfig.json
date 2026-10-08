@@ -8,5 +8,5 @@
     "strict": true,
     "noEmit": true
   },
-  "include": ["index.ts", "tests/**/*.ts"]
+  "include": ["index.ts", "open.ts", "tests/**/*.ts"]
 }
