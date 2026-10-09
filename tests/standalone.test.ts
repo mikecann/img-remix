@@ -10,6 +10,7 @@ test('one-shot CLI loads its own .env from another working directory and uses th
   const dir = mkdtempSync(join(tmpdir(), 'img-remix test '));
   dirs.push(dir);
   copyFileSync(join(import.meta.dirname, '../index.ts'), join(dir, 'index.ts'));
+  copyFileSync(join(import.meta.dirname, '../open.ts'), join(dir, 'open.ts'));
   symlinkSync(join(import.meta.dirname, '../node_modules'), join(dir, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir');
   writeFileSync(join(dir, '.env'), 'OPENROUTER_API_KEY=offline-test-key\n');
   writeFileSync(join(dir, 'input image.png'), 'reference');
@@ -37,6 +38,7 @@ test('one-shot CLI exits non-zero when every variation fails', () => {
   const dir = mkdtempSync(join(tmpdir(), 'img-remix test '));
   dirs.push(dir);
   copyFileSync(join(import.meta.dirname, '../index.ts'), join(dir, 'index.ts'));
+  copyFileSync(join(import.meta.dirname, '../open.ts'), join(dir, 'open.ts'));
   symlinkSync(join(import.meta.dirname, '../node_modules'), join(dir, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir');
   writeFileSync(join(dir, '.env'), 'OPENROUTER_API_KEY=offline-test-key\n');
   writeFileSync(join(dir, 'input image.png'), 'reference');

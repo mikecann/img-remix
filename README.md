@@ -32,7 +32,7 @@ Paste this into your AI coding agent (Claude Code, Codex, Cursor...):
 
 ### Or set it up by hand
 
-You need Git, [Bun](https://bun.sh), and an [OpenRouter API key](https://openrouter.ai/keys). On Windows you can install Bun with `winget install oven-sh.bun`. The macOS launcher also uses Python 3 to resolve symlinks. Image generation sends your image and prompt to OpenRouter and uses your account's credits.
+You need Git, [Bun](https://bun.sh) 1.1.4 or newer, and an [OpenRouter API key](https://openrouter.ai/keys). On Windows you can install Bun with `winget install oven-sh.bun`. The macOS launcher also uses Python 3 to resolve symlinks. Image generation sends your image and prompt to OpenRouter and uses your account's credits.
 
 ```sh
 git clone https://github.com/mikecann/img-remix.git

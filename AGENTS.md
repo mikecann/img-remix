@@ -1,7 +1,8 @@
 # Agent guidance for img-remix
 
 This is a Bun/TypeScript terminal tool for Windows and macOS. `index.ts` holds
-its CLI and OpenRouter requests; `img-remix` is the macOS launcher.
+its CLI and OpenRouter requests; `open.ts` opens results and folders without
+going through cmd.exe; `img-remix` is the macOS launcher.
 
 ## Working here
 
