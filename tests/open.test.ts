@@ -19,6 +19,13 @@ test('Windows passes a drive root to explorer.exe without quotes', () => {
   expect(openCommand('D:\\photos', 'win32')).toEqual(['explorer.exe', '"D:\\photos"']);
 });
 
+// `folder` opens \\server\share\ for an image at the top of a network share. Quoted
+// with its trailing \, the closing quote would read as an escaped quote.
+test('Windows drops the trailing backslash from a UNC share root before quoting it', () => {
+  expect(openCommand('\\\\server\\share\\', 'win32')).toEqual(['explorer.exe', '"\\\\server\\share"']);
+  expect(openCommand('\\\\server\\share\\photos', 'win32')).toEqual(['explorer.exe', '"\\\\server\\share\\photos"']);
+});
+
 test('macOS hands the path to open as a single argument', () => {
   expect(openCommand('/tmp/a&b, c.png', 'darwin')).toEqual(['open', '/tmp/a&b, c.png']);
 });

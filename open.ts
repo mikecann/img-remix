@@ -5,11 +5,14 @@ import { execFileSync } from 'child_process';
 // Windows goes straight to explorer.exe. `cmd /c start` would run anything after
 // an & in the path, and generated file names come from the input image's name.
 // Windows names can't contain ", so quoting the path here is safe, and it stops
-// explorer.exe splitting the path at a comma. A drive root like D:\ is left bare,
-// because "D:\" ends in \" and some parsers read that as an escaped quote.
+// explorer.exe splitting the path at a comma. A quoted path must not end in \,
+// because "D:\" ends in \" and some parsers read that as an escaped quote. So a
+// drive root like D:\ is left bare, and any other trailing \ (a network share
+// root like \\server\share\) is dropped before quoting.
 export function openCommand(target: string, platform: NodeJS.Platform = process.platform): string[] {
   if (platform !== 'win32') return ['open', target];
-  return ['explorer.exe', /^[a-z]:\\$/i.test(target) ? target : `"${target}"`];
+  if (/^[a-z]:\\$/i.test(target)) return ['explorer.exe', target];
+  return ['explorer.exe', `"${target.replace(/\\+$/, '')}"`];
 }
 
 export function openPath(target: string): void {
